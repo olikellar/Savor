@@ -530,13 +530,12 @@
       const diffX = touchEndX - touchStartX;
       const diffY = Math.abs(touchEndY - touchStartY);
 
-      // If user started swiping from near the left edge (< 45px) and dragged right > 60px
       if (touchStartX < 45 && diffX > 60 && diffY < 90) {
         closeRecipeDetail();
       }
     }, { passive: true });
 
-    // WAKE LOCK API (Prevents screen sleep)
+    // WAKE LOCK API
     async function toggleWakeLock() {
       const btn = document.getElementById('wakeLockBtn');
       if (!wakeLock) {
@@ -746,7 +745,6 @@
 
       showAiLoading(true);
       try {
-        // Fetch web page content cleanly via reader proxy
         const response = await fetch(`https://r.jina.ai/${encodeURIComponent(url)}`);
         const webText = await response.text();
         const recipe = await runAiExtraction({ text: `Recipe web page contents:\n\n${webText.slice(0, 15000)}` });
@@ -771,7 +769,8 @@
 
     async function runAiExtraction({ text = '', fileBase64 = '', mimeType = '' }) {
       const apiKey = getGeminiKey();
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      // Updated to gemini-3.8-flash per Google API requirements
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
       const parts = [];
       if (fileBase64 && mimeType) {
